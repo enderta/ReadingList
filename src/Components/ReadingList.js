@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Button, Card} from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 
 function ReadingList() {
     const [books, setBooks] = useState([]);
@@ -58,70 +58,83 @@ function ReadingList() {
     }, [darkMode]);
 
     return (
-
-        <div style={{margin:"10px"}} className="form-check form-switch">
+        <div style={{ margin: '10px' }} className="form-check form-switch">
             <div className="flex items-center justify-between">
+                <Button type="button" onClick={handleDarkMode} variant="outline-success">
+                    {darkMode ? (
+                        <span style={{ color: 'goldenrod' }}>&#x2600; </span>
+                    ) : (
+                        <span style={{ color: 'darkgray' }}>&#127769;</span>
+                    )}
+                </Button>
+
                 <Button
                     type="button"
                     onClick={handleDarkMode}
-                    variant={"outline-dark"}
+                    variant="outline-danger"
+                    style={{ marginLeft: '10px' , alignItems:"flex-end"}}
                 >
-                    {darkMode ? <span style={{color:"goldenrod"}}>&#x2600; </span> : <span style={{color:"darkgray"}}>&#127769;</span>}
+                    {darkMode ? (
+                        <span style={{ color: 'goldenrod' }}> Add Book</span>
+                    ) : (
+                        <span style={{ color: 'goldenrod' }}>Add Book</span>
+                    )}
+
                 </Button>
             </div>
-        <div className="container">
 
-            {loading ? <h1>Loading...</h1> : null}
-            <h1>Reading List</h1>
-            <div className="row">
-                <div className="col-md-12">
-                    <div className="input-group mb-3">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Search"
-                            aria-label="Search"
-                            aria-describedby="button-addon2"
-                            onChange={handleSearch}
-                        />
+            <div className="container">
+                {loading ? <h1>Loading...</h1> : null}
+                <h1>Reading List</h1>
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="input-group mb-3">
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Search"
+                                aria-label="Search"
+                                aria-describedby="button-addon2"
+                                onChange={handleSearch}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-                <br/>
-            <div className="row">
-                {books.map((book, index) => (
-                    <div key={book.id} className="col-md-4 mb-3">
-                        <Card className={darkMode ? 'bg-secondary text-white' : ''}>
-                            <Card.Img
-                                variant="top"
-                                style={{ height: '300px', width: '200px' }}
-                                src={book.image_url}
-                            />
-                            <Card.Body>
-                                <Card.Title>{book.title}</Card.Title>
-                                <Card.Text>{book.author}</Card.Text>
-                                {book.is_read ? (
-                                    <h6
-                                        className="card-subtitle mb-2 text-muted"
-                                        onClick={() => handleCheck(index)}
-                                    >
-                                        Read: ✅
-                                    </h6>
-                                ) : (
-                                    <h6
-                                        className="card-subtitle mb-2 text-muted"
-                                        onClick={() => handleCheck(index)}
-                                    >
-                                        Read: ❌
-                                    </h6>
-                                )}
-                            </Card.Body>
-                        </Card>
-                    </div>
-                ))}
+                <br />
+                <div className="row">
+                    {books.map((book, index) => (
+                        <div key={book.id} className="col-md-4 mb-3">
+                            <Card className={darkMode ? 'bg-secondary text-white' : ''}>
+                                <Card.Img
+                                    variant="top"
+                                    style={{ height: '300px', width: '200px' }}
+                                    src={book.image_url}
+                                />
+                                <Card.Body>
+                                    <Card.Title>{book.title}</Card.Title>
+                                    <Card.Text>{book.author}</Card.Text>
+                                    {book.is_read ? (
+                                        <h6
+                                            className="card-subtitle mb-2 text-muted"
+                                            onClick={() => handleCheck(index)}
+                                        >
+                                            Read: ✅
+                                        </h6>
+                                    ) : (
+                                        <h6
+                                            className="card-subtitle mb-2 text-muted"
+                                            onClick={() => handleCheck(index)}
+                                        >
+                                            Read: ❌
+                                        </h6>
+                                    )}
+                                </Card.Body>
+                            </Card>
+                        </div>
+                    ))}
+                </div>
             </div>
-        </div>
         </div>
     );
 }
