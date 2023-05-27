@@ -5,7 +5,7 @@ function ReadingList() {
     const [books, setBooks] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState(true);
 
     const fetchBooks = () => {
         setLoading(true);
@@ -103,16 +103,19 @@ function ReadingList() {
                 </div>
 
                 <br />
-                <div className="row">
+                <div className="row" >
                     {books.map((book, index) => (
-                        <div key={book.id} className="col-md-4 mb-3">
-                            <Card className={darkMode ? 'bg-secondary text-white' : ''}>
+                        <div key={book.id} className="col-md-4 mb-3"  >
+                            <Card
+                                className={darkMode ? '' : ''} style={{ backgroundColor: darkMode ? "goldenrod" : 'white' }}
+
+                            >
                                 <Card.Img
                                     variant="top"
                                     style={{ height: '300px', width: '200px' }}
                                     src={book.image_url}
                                 />
-                                <Card.Body>
+                                <Card.Body >
                                     <Card.Title>{book.title}</Card.Title>
                                     <Card.Text>{book.author}</Card.Text>
                                     {book.is_read ? (
