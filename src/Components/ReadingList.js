@@ -1,11 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card } from 'react-bootstrap';
+import { Button, Card, Form } from 'react-bootstrap';
 
 function ReadingList() {
     const [books, setBooks] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
     const [darkMode, setDarkMode] = useState(true);
+    const [title, setTitle] = useState('');
+    const [author, setAuthor] = useState('');
+    const [image_url, setImageUrl] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        fetch('http://localhost:5000/books', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title,
+                author,
+                image_url,
+                is_read: false,
+            }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                fetchBooks();
+                setTitle("");
+                setAuthor("");
+                setImageUrl("");
+
+            });
+    }
+
 
     const fetchBooks = () => {
         setLoading(true);
@@ -69,19 +97,9 @@ function ReadingList() {
                     )}
                 </Button>
 
-                <Button
-                    type="button"
-                    onClick={handleDarkMode}
-                    variant="outline-danger"
-                    style={{ marginLeft: '10px' , alignItems:"flex-end"}}
-                >
-                    {darkMode ? (
-                        <span style={{ color: 'goldenrod' }}> Add Book</span>
-                    ) : (
-                        <span style={{ color: 'goldenrod' }}>Add Book</span>
-                    )}
 
-                </Button>
+
+
             </div>
 
             <div className="container">
@@ -107,7 +125,7 @@ function ReadingList() {
                     {books.map((book, index) => (
                         <div key={book.id} className="col-md-4 mb-3"  >
                             <Card
-                                className={darkMode ? '' : ''} style={{ backgroundColor: darkMode ? "goldenrod" : 'white' }}
+                                className={darkMode ? '' : ''} style={{ backgroundColor: darkMode ? "#070f23" : 'white' }}
 
                             >
                                 <Card.Img
@@ -138,6 +156,83 @@ function ReadingList() {
                         </div>
                     ))}
                 </div>
+                <br />
+                <Card  style={{ backgroundColor: darkMode ? "#070f23" : 'white',width: '20rem' }}>
+                    {darkMode ? (
+                        <span > Add Book
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group controlId="formBasicEmail">
+                                <Form.Label>Title</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Enter Title"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="formBasicEmail">
+                                <Form.Label>Author</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Enter Author"
+                                    value={author}
+                                    onChange={(e) => setAuthor(e.target.value)}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="formBasicEmail">
+                                <Form.Label>Image URL</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Enter Image URL"
+                                    value={image_url}
+                                    onChange={(e) => setImageUrl(e.target.value)}
+                                />
+                            </Form.Group>
+                            <br/>
+                            <Button variant="outline-danger" type="submit">
+                                Submit
+                            </Button>
+                        </Form>
+                        </span>
+                    ) : (
+                        <span >
+                            Add Book
+                              <Form onSubmit={handleSubmit}>
+                            <Form.Group controlId="formBasicEmail">
+                                <Form.Label>Title</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Enter Title"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="formBasicEmail">
+                                <Form.Label>Author</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Enter Author"
+                                    value={author}
+                                    onChange={(e) => setAuthor(e.target.value)}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="formBasicEmail">
+                                <Form.Label>Image URL</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Enter Image URL"
+                                    value={image_url}
+                                    onChange={(e) => setImageUrl(e.target.value)}
+                                />
+                            </Form.Group>
+                            <Button variant="primary" type="submit">
+                                Submit
+                            </Button>
+                        </Form>
+
+                        </span>
+                    )}
+                </Card>
             </div>
         </div>
     );
