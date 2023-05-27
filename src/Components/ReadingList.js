@@ -157,7 +157,7 @@ function ReadingList() {
                     ))}
                 </div>
                 <br />
-                <Card  style={{ backgroundColor: darkMode ? "#070f23" : 'white',width: '20rem' }}>
+                <Card  style={{ backgroundColor: darkMode ? "#101526" : 'white',width: '20rem' }}>
                     {darkMode ? (
                         <span > Add Book
                         <Form onSubmit={handleSubmit}>
