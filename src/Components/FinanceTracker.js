@@ -7,7 +7,7 @@ const FinanceTracker = () => {
     const API_ENDPOINT = `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol=TRY&apikey=081B1G95JBIIWXV1`;
     const [data, setData] = useState([]);
     const [isDarkMode, setIsDarkMode] = useState(false);
-    const [slice, setSlice] = useState(30);
+    const [slice, setSlice] = useState(5);
 
     const handleSliceChange = (e) => {
         e.preventDefault();
@@ -26,8 +26,8 @@ const FinanceTracker = () => {
     }, [slice]);
 
     console.log(data)
-
     const generateChartOptions = () => {
+       
         return {
             title: {
                 text: 'USD/TRY Exchange Rate',
@@ -35,25 +35,46 @@ const FinanceTracker = () => {
             yAxis: {
                 title: {
                     text: 'Exchange Rate',
+                    style: {
+                        color: isDarkMode ? 'goldenrod' : 'black',
+                    },
+                },
+                labels: {
+                    style: {
+                        color: isDarkMode ? 'goldenrod' : 'black',
+                    },
                 },
             },
             xAxis: {
+                color: isDarkMode ? 'goldenrod' : 'black',
                 type: 'datetime',
+                style: {
+                    color: isDarkMode ? 'goldenrod' : 'black',
+                },
+                labels: {
+                    style: {
+                        color: isDarkMode ? 'goldenrod' : 'black',
+                    },
+                },
+
             },
+            colors: [isDarkMode ? 'goldenrod' : 'black'],
             series: [
                 {
                     name: 'USD/TRY',
                     data: data,
+                    color: isDarkMode ? 'goldenrod' : 'black',
                 },
             ],
             chart: {
-                backgroundColor: isDarkMode ? '#333' : '#FFF',
+                backgroundColor: isDarkMode ? '#333' : 'white',
                 height: 500,
             },
             tooltip: {
                 backgroundColor: '#333',
                 style: {
-                    color: '#FFF',
+                    color: 'white',
+
                 },
                 formatter: function () {
                     return `<strong>${this.series.name}</strong><br/>${new Date(this.x).toLocaleDateString()}<br/>${this.y}`;
@@ -61,12 +82,23 @@ const FinanceTracker = () => {
             },
             plotOptions: {
                 series: {
-                    color: isDarkMode ? '#FFF' : '#333',
+                    label: {
+                        connectorAllowed: false,
+                    },
+                    pointStart: 2010,
                 },
             },
-        };
-    }
+            legend: {
+                itemStyle: {
+                    color: isDarkMode ? 'goldenrod' : 'black',
+                },
+                itemHoverStyle: {
+                    color: isDarkMode ? 'goldenrod' : 'black',
+                },
 
+            },
+        };
+    };
 
 
 
