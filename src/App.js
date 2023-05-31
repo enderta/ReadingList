@@ -1,11 +1,12 @@
 
 import './App.css';
-import ReadingList from "./Components/ReadingList";
+import FinanceTracker from "./Components/FinanceTracker";
 
 function App() {
   return (
     <div className="App">
-      <ReadingList />
+      <FinanceTracker />
+        
     </div>
   );
 }
