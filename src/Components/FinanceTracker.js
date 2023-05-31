@@ -7,18 +7,23 @@ const FinanceTracker = () => {
     const API_ENDPOINT = `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol=TRY&apikey=081B1G95JBIIWXV1`;
     const [data, setData] = useState([]);
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [slice, setSlice] = useState(30);
 
+    const handleSliceChange = (e) => {
+        e.preventDefault();
+        setSlice(e.target.value);
+    }
     useEffect(() => {
        async function fetchData() {
             const response = await fetch(API_ENDPOINT);
             const data = await response.json();
-            const last30DaysData = Object.entries(data['Time Series FX (Daily)']).slice(0, 30).map((entry) => {
+            const last30DaysData = Object.entries(data['Time Series FX (Daily)']).slice(0, slice).map((entry) => {
                 return [new Date(entry[0]).getTime(), parseFloat(entry[1]['4. close'])];
             });
             setData(last30DaysData);
         }
         fetchData();
-    }, []);
+    }, [slice]);
 
     console.log(data)
 
@@ -61,13 +66,19 @@ const FinanceTracker = () => {
             },
         };
     }
-    
+
 
 
 
     return (
         <div>
             <h1>USD/TRY Exchange Rate</h1>
+            <select onChange={handleSliceChange} value={slice}>
+                <option value={7}>Last 7 Days</option>
+                <option value={30}>Last 30 Days</option>
+                <option value={60}>Last 60 Days</option>
+                <option value={90}>Last 90 Days</option>
+            </select>
             <button onClick={() => setIsDarkMode(!isDarkMode)}>Toggle Theme</button>
             <HighchartsReact highcharts={Highcharts} options={generateChartOptions()} />
         </div>
