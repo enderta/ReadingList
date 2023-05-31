@@ -5,105 +5,65 @@ import HighchartsReact from 'highcharts-react-official';
 const FinanceTracker = () => {
     const API_KEY = '081B1G95JBIIWXV1';
     const API_ENDPOINT = `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol=TRY&apikey=081B1G95JBIIWXV1`;
-    const [data, setData] = useState({});
+    const [data, setData] = useState([]);
     const [isDarkMode, setIsDarkMode] = useState(false);
 
-    const fetchStockData = async () => {
-        try {
-            const response = await fetch(API_ENDPOINT);
-            const responseData = await response.json();
-            const dates = Object.keys(responseData['Time Series FX (Daily)']);
-            const stockData = Object.values(responseData['Time Series FX (Daily)']).map((value) => parseFloat(value['4. close']));
-            const data = dates.map((date, index) => [Date.parse(date), stockData[index]]);
-            setData(data);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
     useEffect(() => {
-        fetchStockData();
+       async function fetchData() {
+            const response = await fetch(API_ENDPOINT);
+            const data = await response.json();
+            const last30DaysData = Object.entries(data['Time Series FX (Daily)']).slice(0, 30).map((entry) => {
+                return [new Date(entry[0]).getTime(), parseFloat(entry[1]['4. close'])];
+            });
+            setData(last30DaysData);
+        }
+        fetchData();
     }, []);
 
+    console.log(data)
+
     const generateChartOptions = () => {
-        const chartOptions = {
-            chart: {
-                backgroundColor: isDarkMode ? '#333' : '#fff',
-                style: {
-                    color: isDarkMode ? '#fff' : '#333',
-                },
-            },
+        return {
             title: {
                 text: 'USD/TRY Exchange Rate',
-                style: {
-                    color: isDarkMode ? '#fff' : '#333',
+            },
+            yAxis: {
+                title: {
+                    text: 'Exchange Rate',
                 },
             },
             xAxis: {
                 type: 'datetime',
-                labels: {
-                    style: {
-                        color: isDarkMode ? '#fff' : '#333',
-                    },
-                },
-                rangeSelector: {
-                    enabled: true,
-                    buttons: [
-                        {
-                            type: 'month',
-                            count: 1,
-                            text: '1m',
-                        },
-                        {
-                            type: 'month',
-                            count: 3,
-                            text: '3m',
-                        },
-                        {
-                            type: 'month',
-                            count: 6,
-                            text: '6m',
-                        },
-                        {
-                            type: 'ytd',
-                            text: 'YTD',
-                        },
-                        {
-                            type: 'year',
-                            count: 1,
-                            text: '1y',
-                        },
-                        {
-                            type: 'all',
-                            text: 'All',
-                        },
-                    ],
-                    selected: 5, // set the default range to 'All'
-                },
-            },
-            yAxis: {
-                title: {
-                    text: 'Price',
-                    style: {
-                        color: isDarkMode ? '#fff' : '#333',
-                    },
-                },
-                labels: {
-                    style: {
-                        color: isDarkMode ? '#fff' : '#333',
-                    },
-                },
             },
             series: [
                 {
                     name: 'USD/TRY',
                     data: data,
-                    color: isDarkMode ? '#fff' : '#333',
                 },
             ],
+            chart: {
+                backgroundColor: isDarkMode ? '#333' : '#FFF',
+                height: 500,
+            },
+            tooltip: {
+                backgroundColor: '#333',
+                style: {
+                    color: '#FFF',
+                },
+                formatter: function () {
+                    return `<strong>${this.series.name}</strong><br/>${new Date(this.x).toLocaleDateString()}<br/>${this.y}`;
+                },
+            },
+            plotOptions: {
+                series: {
+                    color: isDarkMode ? '#FFF' : '#333',
+                },
+            },
         };
-        return chartOptions;
-    };
+    }
+    
+
+
 
     return (
         <div>
