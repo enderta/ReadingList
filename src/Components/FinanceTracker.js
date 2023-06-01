@@ -3,15 +3,25 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 const FinanceTracker = () => {
-    const API_KEY = '081B1G95JBIIWXV1';
-    const API_ENDPOINT = `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol=TRY&apikey=081B1G95JBIIWXV1`;
+
     const [data, setData] = useState([]);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [slice, setSlice] = useState(5);
-
+    const [from, setFrom] = useState('USD');
+    const [to, setTo] = useState('TRY');
+    const API_KEY = '081B1G95JBIIWXV1';
+    const API_ENDPOINT = `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=${from}&to_symbol=${to}&apikey=081B1G95JBIIWXV1`;
     const handleSliceChange = (e) => {
         e.preventDefault();
         setSlice(e.target.value);
+    }
+    const handleFromChange = (e) => {
+        e.preventDefault();
+        setFrom(e.target.value);
+    }
+    const handleToChange = (e) => {
+        e.preventDefault();
+        setTo(e.target.value);
     }
     useEffect(() => {
        async function fetchData() {
@@ -23,14 +33,16 @@ const FinanceTracker = () => {
             setData(last30DaysData);
         }
         fetchData();
-    }, [slice]);
+    }, [slice, from, to]);
 
-    console.log(data)
+    console.log(data.at(-1))
     const generateChartOptions = () => {
-       
         return {
             title: {
-                text: 'USD/TRY Exchange Rate',
+                text: `${from}/${to} Exchange Rate`,
+                style: {
+                    color: isDarkMode ? 'goldenrod' : 'black',
+                },
             },
             yAxis: {
                 title: {
@@ -56,25 +68,34 @@ const FinanceTracker = () => {
                         color: isDarkMode ? 'goldenrod' : 'black',
                     },
                 },
-
             },
-            colors: [isDarkMode ? 'goldenrod' : 'black'],
-            series: [
-                {
-                    name: 'USD/TRY',
-                    data: data,
-                    color: isDarkMode ? 'goldenrod' : 'black',
+            series: [{
+                name: `${from}/${to}`,
+                data: data,
+                lineWidth: 2,
+                type: 'spline',
+                marker: {
+                    enabled: true,
+                    radius: 3
                 },
-            ],
+                color: isDarkMode ? 'goldenrod' : 'black'
+            }],
             chart: {
+                type: 'line',
+                //make responsive
+
+           
+
+
+
+                spacing: [10, 10, 10, 10],
                 backgroundColor: isDarkMode ? '#333' : 'white',
-                height: 500,
+
             },
             tooltip: {
                 backgroundColor: '#333',
                 style: {
                     color: 'white',
-
                 },
                 formatter: function () {
                     return `<strong>${this.series.name}</strong><br/>${new Date(this.x).toLocaleDateString()}<br/>${this.y}`;
@@ -95,11 +116,9 @@ const FinanceTracker = () => {
                 itemHoverStyle: {
                     color: isDarkMode ? 'goldenrod' : 'black',
                 },
-
             },
         };
     };
-
 
 
     return (
@@ -111,6 +130,19 @@ const FinanceTracker = () => {
                 <option value={60}>Last 60 Days</option>
                 <option value={90}>Last 90 Days</option>
             </select>
+            <select onChange={handleFromChange} value={from}>
+                <option value={'USD'}>USD</option>
+                <option value={'EUR'}>EUR</option>
+                <option value={'GBP'}>GBP</option>
+                <option value={'JPY'}>JPY</option>
+            </select>
+            <select onChange={handleToChange} value={to}>
+                <option value={'TRY'}>TRY</option>
+                <option value={'EUR'}>EUR</option>
+                <option value={'GBP'}>GBP</option>
+                <option value={'JPY'}>JPY</option>
+            </select>
+
             <button onClick={() => setIsDarkMode(!isDarkMode)}>Toggle Theme</button>
             <HighchartsReact highcharts={Highcharts} options={generateChartOptions()} />
         </div>
