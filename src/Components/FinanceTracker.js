@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { Button, Form } from 'react-bootstrap';
+import './tracker.css'
 
 const FinanceTracker = () => {
     const [data, setData] = useState([]);
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(true);
     const [slice, setSlice] = useState(5);
     const [from, setFrom] = useState('USD');
     const [to, setTo] = useState('TRY');
@@ -93,6 +94,7 @@ const FinanceTracker = () => {
                 type: 'line',
                 spacing: [10, 10, 10, 10],
                 backgroundColor: isDarkMode ? '#333' : 'white',
+                credentials:false,
             },
             tooltip: {
                 backgroundColor: '#333',
@@ -122,18 +124,31 @@ const FinanceTracker = () => {
         };
     };
 
+    const handleModeChange = () => {
+        setIsDarkMode(!isDarkMode);
+    };
+    useEffect(() => {
+        if (isDarkMode) {
+            document.body.style.backgroundColor = '#333';
+            document.body.style.color = '#fff';
+        } else {
+            document.body.style.backgroundColor = 'white';
+            document.body.style.color = 'black';
+        }
+    }, [isDarkMode]);
+
     return (
-        <div style={{ margin: '10px' }}>
+        <div className="app-container" style={{ margin: '10px' }}>
             <h1>USD/TRY Exchange Rate</h1>
             {data.length === 0 || data.length === null ? (
-                'Refresh the page if the chart does not load.'
-            )  : (<div className={`app-container ${isDarkMode ? 'dark' : 'light'}`}>
+                'Loading...'
+            ) : (
+                <>
                     <div className="chart-container">
                         <HighchartsReact highcharts={Highcharts} options={generateChartOptions()} />
                     </div>
                     <div className="controls-container">
-
-                        <Form className="form-container" style={{width:'150px',margin:"10px"}}>
+                        <Form className="form-container" style={{ width: '150px', margin: '10px' }}>
                             <Form.Group controlId="formSlice">
                                 <Form.Label>Show: </Form.Label>
                                 <Form.Control as="select" value={slice} onChange={handleSliceChange}>
@@ -163,14 +178,17 @@ const FinanceTracker = () => {
                                     <option value={'JPY'}>JPY</option>
                                 </Form.Control>
                             </Form.Group>
-                            <br/>
-                            <Button variant="primary" onClick={() => setIsDarkMode(!isDarkMode)}>
-                                {isDarkMode ? 'Light' : 'Dark'}
-                            </Button>
                         </Form>
-                    </div>
-                </div>)
-            }
+                            <br/>
+
+
+                </div>
+
+                </>
+            )}
+            <Button variant={isDarkMode ? 'outline-success':'outline-dark'} onClick={handleModeChange}>
+                {isDarkMode ? 'Light' : 'Dark'} Mode
+            </Button>
         </div>
     );
 };
