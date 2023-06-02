@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { Button, Form } from 'react-bootstrap';
 
 const FinanceTracker = () => {
-
     const [data, setData] = useState([]);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [slice, setSlice] = useState(5);
@@ -11,31 +11,40 @@ const FinanceTracker = () => {
     const [to, setTo] = useState('TRY');
     const API_KEY = '081B1G95JBIIWXV1';
     const API_ENDPOINT = `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=${from}&to_symbol=${to}&apikey=081B1G95JBIIWXV1`;
+
     const handleSliceChange = (e) => {
         e.preventDefault();
         setSlice(e.target.value);
-    }
+    };
+
     const handleFromChange = (e) => {
         e.preventDefault();
         setFrom(e.target.value);
-    }
+    };
+
     const handleToChange = (e) => {
         e.preventDefault();
         setTo(e.target.value);
-    }
+    };
+
     useEffect(() => {
-       async function fetchData() {
-            const response = await fetch(API_ENDPOINT);
-            const data = await response.json();
-            const last30DaysData = Object.entries(data['Time Series FX (Daily)']).slice(0, slice).map((entry) => {
-                return [new Date(entry[0]).getTime(), parseFloat(entry[1]['4. close'])];
-            });
-            setData(last30DaysData);
+        async function fetchData() {
+            try {
+                const response = await fetch(API_ENDPOINT);
+                const data = await response.json();
+                if (data && data['Time Series FX (Daily)']) {
+                    const last30DaysData = Object.entries(data['Time Series FX (Daily)']).slice(0, slice).map((entry) => {
+                        return [new Date(entry[0]).getTime(), parseFloat(entry[1]['4. close'])];
+                    });
+                    setData(last30DaysData);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         }
         fetchData();
     }, [slice, from, to]);
 
-    console.log(data.at(-1))
     const generateChartOptions = () => {
         return {
             title: {
@@ -76,21 +85,14 @@ const FinanceTracker = () => {
                 type: 'spline',
                 marker: {
                     enabled: true,
-                    radius: 3
+                    radius: 3,
                 },
-                color: isDarkMode ? 'goldenrod' : 'black'
+                color: isDarkMode ? 'goldenrod' : 'black',
             }],
             chart: {
                 type: 'line',
-                //make responsive
-
-           
-
-
-
                 spacing: [10, 10, 10, 10],
                 backgroundColor: isDarkMode ? '#333' : 'white',
-
             },
             tooltip: {
                 backgroundColor: '#333',
@@ -120,31 +122,55 @@ const FinanceTracker = () => {
         };
     };
 
-
     return (
-        <div>
+        <div style={{ margin: '10px' }}>
             <h1>USD/TRY Exchange Rate</h1>
-            <select onChange={handleSliceChange} value={slice}>
-                <option value={7}>Last 7 Days</option>
-                <option value={30}>Last 30 Days</option>
-                <option value={60}>Last 60 Days</option>
-                <option value={90}>Last 90 Days</option>
-            </select>
-            <select onChange={handleFromChange} value={from}>
-                <option value={'USD'}>USD</option>
-                <option value={'EUR'}>EUR</option>
-                <option value={'GBP'}>GBP</option>
-                <option value={'JPY'}>JPY</option>
-            </select>
-            <select onChange={handleToChange} value={to}>
-                <option value={'TRY'}>TRY</option>
-                <option value={'EUR'}>EUR</option>
-                <option value={'GBP'}>GBP</option>
-                <option value={'JPY'}>JPY</option>
-            </select>
+            {data.length === 0 || data.length === null ? (
+                'Refresh the page if the chart does not load.'
+            )  : (<div className={`app-container ${isDarkMode ? 'dark' : 'light'}`}>
+                    <div className="chart-container">
+                        <HighchartsReact highcharts={Highcharts} options={generateChartOptions()} />
+                    </div>
+                    <div className="controls-container">
 
-            <button onClick={() => setIsDarkMode(!isDarkMode)}>Toggle Theme</button>
-            <HighchartsReact highcharts={Highcharts} options={generateChartOptions()} />
+                        <Form className="form-container" style={{width:'150px',margin:"10px"}}>
+                            <Form.Group controlId="formSlice">
+                                <Form.Label>Show: </Form.Label>
+                                <Form.Control as="select" value={slice} onChange={handleSliceChange}>
+                                    <option value={7}>Last 7 Days</option>
+                                    <option value={30}>Last 30 Days</option>
+                                    <option value={60}>Last 60 Days</option>
+                                    <option value={90}>Last 90 Days</option>
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId="formFrom">
+                                <Form.Label>From:</Form.Label>
+                                <Form.Control as="select" value={from} onChange={handleFromChange}>
+                                    <option value={'USD'}>USD</option>
+                                    <option value={'EUR'}>EUR</option>
+                                    <option value={'GBP'}>GBP</option>
+                                    <option value={'JPY'}>JPY</option>
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId="formTo">
+                                <Form.Label>To:</Form.Label>
+                                <Form.Control as="select" value={to} onChange={handleToChange}>
+                                    <option value={'TRY'}>TRY</option>
+                                    <option value={'EUR'}>EUR</option>
+                                    <option value={'GBP'}>GBP</option>
+                                    <option value={'JPY'}>JPY</option>
+                                </Form.Control>
+                            </Form.Group>
+                            <br/>
+                            <Button variant="primary" onClick={() => setIsDarkMode(!isDarkMode)}>
+                                {isDarkMode ? 'Light' : 'Dark'}
+                            </Button>
+                        </Form>
+                    </div>
+                </div>)
+            }
         </div>
     );
 };
