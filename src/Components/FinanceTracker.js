@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { Button, Form } from 'react-bootstrap';
-import './tracker.css'
+import regression from 'regression';
+
 
 const FinanceTracker = () => {
     const [data, setData] = useState([]);
@@ -46,7 +47,9 @@ const FinanceTracker = () => {
         fetchData();
     }, [slice, from, to]);
 
+
     const generateChartOptions = () => {
+
         return {
             title: {
                 text: `${from}/${to} Exchange Rate`,
@@ -79,17 +82,20 @@ const FinanceTracker = () => {
                     },
                 },
             },
-            series: [{
-                name: `${from}/${to}`,
-                data: data,
-                lineWidth: 2,
-                type: 'spline',
-                marker: {
-                    enabled: true,
-                    radius: 3,
+            series: [
+                {
+                    name: `${from}/${to}`,
+                    data: data,
+                    lineWidth: 2,
+                    type: 'spline',
+                    marker: {
+                        enabled: true,
+                        radius: 3,
+                    },
+                    color: isDarkMode ? 'goldenrod' : 'black',
                 },
-                color: isDarkMode ? 'goldenrod' : 'black',
-            }],
+
+            ],
             chart: {
                 type: 'line',
                 spacing: [10, 10, 10, 10],
@@ -124,6 +130,7 @@ const FinanceTracker = () => {
         };
     };
 
+
     const handleModeChange = () => {
         setIsDarkMode(!isDarkMode);
     };
@@ -138,8 +145,8 @@ const FinanceTracker = () => {
     }, [isDarkMode]);
 
     return (
-        <div className="app-container" style={{ margin: '10px' }}>
-            <h1>USD/TRY Exchange Rate</h1>
+        <div className="app-container" style={{ margin: '13px' }}>
+          {/*  <h3>USD/TRY Exchange Rate</h3>*/}
             {data.length === 0 || data.length === null ? (
                 'Loading...'
             ) : (
