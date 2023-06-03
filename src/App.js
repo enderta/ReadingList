@@ -1,11 +1,11 @@
 
 import './App.css';
-import FinanceTracker from "./Components/FinanceTracker";
+import Oil from './Components/Oil.js';
 
 function App() {
   return (
     <div className="App">
-      <FinanceTracker />
+   <Oil/>
         
     </div>
   );
