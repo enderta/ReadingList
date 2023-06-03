@@ -8,7 +8,7 @@ import regression from 'regression';
 const FinanceTracker = () => {
     const [data, setData] = useState([]);
     const [isDarkMode, setIsDarkMode] = useState(true);
-    const [slice, setSlice] = useState(5);
+    const [slice, setSlice] = useState(7);
     const [from, setFrom] = useState('USD');
     const [to, setTo] = useState('TRY');
     const API_KEY = '081B1G95JBIIWXV1';
@@ -188,14 +188,14 @@ const FinanceTracker = () => {
                         </Form>
                             <br/>
 
-
+                        <Button variant={isDarkMode ? 'outline-success':'outline-dark'} onClick={handleModeChange}>
+                            {isDarkMode ? 'Light' : 'Dark'} Mode
+                        </Button>
                 </div>
 
                 </>
             )}
-            <Button variant={isDarkMode ? 'outline-success':'outline-dark'} onClick={handleModeChange}>
-                {isDarkMode ? 'Light' : 'Dark'} Mode
-            </Button>
+
         </div>
     );
 };
