@@ -122,6 +122,9 @@ const Oil = () => {
 
     return (
         <div style={{ margin: '10px' }}>
+            <Button variant={isDarkMode ? 'outline-success' : 'outline-dark'} onClick={handleModeChange}>
+            {isDarkMode ? 'Light' : 'Dark'} Mode
+        </Button>
             {data.length<=0 ? (
                 <div style={{ textAlign: 'center' }}>
                     <h2>Loading...</h2>
@@ -135,17 +138,15 @@ const Oil = () => {
                                 <Form.Label>Year</Form.Label>
                                 <Form.Control as="select" value={year} onChange={(e) => setYear(e.target.value)}>
                                     <option value="">All</option>
-                                    <option value="2020">2020</option>
-                                    <option value="2021">2021</option>
-                                    <option value="2022">2022</option>
                                     <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
                                 </Form.Control>
                             </Form.Group>
                         </Form>
                     </div>
-                    <Button variant={isDarkMode ? 'outline-success' : 'outline-dark'} onClick={handleModeChange}>
-                        {isDarkMode ? 'Light' : 'Dark'} Mode
-                    </Button>
+
                 </div>
 
                 )
